@@ -40,25 +40,24 @@ app.get('/allincidents', async (req, res) => {
     }
 });
 
-//Example route: Create a new card
 app.post('/addincident', async (req, res) => {
-    const { card_name, card_pic } = req.body;
+    const { incident_type, severity, reference_url } = req.body;
 
     try {
         const connection = await mysql.createConnection(dbConfig);
         await connection.execute(
-            'INSERT INTO incidents (incident_type, severity, reported_at, reference_url) VALUES (?, ?, ?, ?)',
-            [card_name, card_pic]
+            'INSERT INTO incidents (incident_type, severity, reference_url) VALUES (?, ?, ?)',
+            [incident_type, severity, reference_url]
         );
         await connection.end();
 
         res.status(201).json({
-            message: `Card ${card_name} added successfully`
+            message: `Incident "${incident_type}" added successfully`
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({
-            message: `Server error - could not add card ${card_name}`
+            message: 'Server error - could not add incident'
         });
     }
 });
